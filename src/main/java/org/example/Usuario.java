@@ -1,6 +1,6 @@
 package org.example;
 
-public class Usuario{
+public class Usuario {
     private int id;
     private String tipoIdentificacion;
     private String numeroIdentificacion;
@@ -26,8 +26,61 @@ public class Usuario{
         this.correo = correo;
         this.foto = foto;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getTipoIdentificacion() {
+        return tipoIdentificacion;
+    }
+
+    public String getNumeroIdentificacion() {
+        return numeroIdentificacion;
+    }
+
     public String getPrimerNombre() {
         return primerNombre;
+    }
+
+    public String getSegundoNombre() {
+        return segundoNombre;
+    }
+
+    public String getPrimerApellido() {
+        return primerApellido;
+    }
+
+    public String getSegundoApellido() {
+        return segundoApellido;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
 
