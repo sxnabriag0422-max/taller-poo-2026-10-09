@@ -91,7 +91,14 @@ public class Usuario {
         return primerApellido.substring(0, 1) + inicialSegundo + primerNombre;
     }
 
+    public String getNombreCompleto() {
+        String nombreSegundo = "";
+        if (!segundoNombre.isEmpty()) {
+            nombreSegundo = segundoNombre;
+        }
+        return primerNombre + "" + segundoNombre + "" + primerApellido + "" + segundoApellido;
 
+    }
 
 
 }
