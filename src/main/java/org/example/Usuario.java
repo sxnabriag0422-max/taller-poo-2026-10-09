@@ -82,5 +82,17 @@ public class Usuario {
     public String getUsername() {
         return username;
     }
+
+    public String generarUsername() {
+        String inicialSegundo = "";
+        if (!segundoApellido.isEmpty()) {
+            inicialSegundo = segundoApellido.substring(0, 1);
+        }
+        return primerApellido.substring(0, 1) + inicialSegundo + primerNombre;
+    }
+
+
+
+
 }
 
