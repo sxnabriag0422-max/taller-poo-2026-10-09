@@ -78,11 +78,9 @@ public class FormRegistro extends JFrame {
                 txtSegundoApellido.getText()
         );
 
-        if (username.isEmpty()) {
-            lblUsername.setText("-");
-        } else {
-            lblUsername.setText(username);
-        }
+        lblUsername.setText(
+                username.isEmpty() ? "-" : username
+        );
     }
 
     private void llenarTiposId() {
@@ -105,7 +103,8 @@ public class FormRegistro extends JFrame {
         selector.setAcceptAllFileFilterUsed(false);
         selector.setFileFilter(
                 new FileNameExtensionFilter(
-                        "Imágenes PNG y JPG", "png", "jpg"
+                        "Imágenes PNG y JPG",
+                        "png", "jpg"
                 )
         );
 
@@ -165,7 +164,7 @@ public class FormRegistro extends JFrame {
         String telefono = txtTelefono.getText().trim();
         String correo = txtCorreo.getText().trim();
 
-        // 1. Comprobar campos obligatorios
+        // 1. Validar campos obligatorios
         if (numeroId.isEmpty()
                 || primerNombre.isEmpty()
                 || primerApellido.isEmpty()
@@ -182,7 +181,7 @@ public class FormRegistro extends JFrame {
             return;
         }
 
-        // 2. Validar correo electrónico
+        // 2. Validar correo
         if (!correo.contains("@")) {
             JOptionPane.showMessageDialog(
                     this,
@@ -193,7 +192,7 @@ public class FormRegistro extends JFrame {
             return;
         }
 
-        // 3. Validar número de identificación
+        // 3. Validar identificación
         boolean debeSerNumerico =
                 !(tipoId.startsWith("41")
                         || tipoId.startsWith("42"));
@@ -221,7 +220,7 @@ public class FormRegistro extends JFrame {
             return;
         }
 
-        // 5. Validar seguridad de contraseña
+        // 5. Validar contraseña
         if (!password.matches(
                 "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$"
         )) {
@@ -240,7 +239,30 @@ public class FormRegistro extends JFrame {
             return;
         }
 
-        // 6. Crear y registrar usuario
+        // 6. Evitar identificaciones duplicadas
+        for (Usuario usuarioExistente : usuarios) {
+
+            boolean mismoTipo =
+                    usuarioExistente.getTipoIdentificacion()
+                            .equals(tipoId);
+
+            boolean mismoNumero =
+                    usuarioExistente.getNumeroIdentificacion()
+                            .equalsIgnoreCase(numeroId);
+
+            if (mismoTipo && mismoNumero) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Ya existe un usuario registrado con "
+                                + "este tipo y número de identificación.",
+                        "Identificación duplicada",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+        }
+
+        // 7. Crear y registrar usuario
         Usuario u = new Usuario(
                 tipoId,
                 numeroId,
