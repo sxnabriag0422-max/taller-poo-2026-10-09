@@ -1,6 +1,8 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.util.ArrayList;
 
 public class FormRegistro extends JFrame {
@@ -19,10 +21,8 @@ public class FormRegistro extends JFrame {
     private JLabel lblFoto;
     private JButton btnGuardar;
 
-    // La lista llega desde FormMenu: es la misma para todas las ventanas
     private final ArrayList<Usuario> usuarios;
 
-    // Ruta de la foto elegida (se llena cuando se carga la foto)
     private String rutaFoto = "";
 
     public FormRegistro(ArrayList<Usuario> usuarios) {
@@ -35,9 +35,38 @@ public class FormRegistro extends JFrame {
         setLocationRelativeTo(null);
 
         btnGuardar.addActionListener(e -> guardar());
+
+        DocumentListener actualizador = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                actualizarUsername();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                actualizarUsername();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                actualizarUsername();
+            }
+        };
+        txtPrimerNombre.getDocument().addDocumentListener(actualizador);
+        txtPrimerApellido.getDocument().addDocumentListener(actualizador);
+        txtSegundoApellido.getDocument().addDocumentListener(actualizador);
     }
 
-    // Tipos de documento de persona natural (codificación DIAN)
+    private void actualizarUsername() {
+        String username = Usuario.construirUsername(txtPrimerNombre.getText(),
+                txtPrimerApellido.getText(), txtSegundoApellido.getText());
+        if (username.isEmpty()) {
+            lblUsername.setText("-");
+        } else {
+            lblUsername.setText(username);
+        }
+    }
+
     private void llenarTiposId() {
         cmbTipoId.addItem("11 - Registro civil de nacimiento");
         cmbTipoId.addItem("12 - Tarjeta de identidad");
@@ -58,12 +87,10 @@ public class FormRegistro extends JFrame {
         String segundoNombre = txtSegundoNombre.getText().trim();
         String primerApellido = txtPrimerApellido.getText().trim();
         String segundoApellido = txtSegundoApellido.getText().trim();
-        // El JPasswordField no tiene getText(): se lee como arreglo de caracteres
         String password = new String(txtPassword.getPassword());
         String telefono = txtTelefono.getText().trim();
         String correo = txtCorreo.getText().trim();
 
-        // Campos obligatorios
         if (numeroId.isEmpty() || primerNombre.isEmpty() || primerApellido.isEmpty()
                 || password.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Complete todos los campos obligatorios.",
@@ -71,14 +98,12 @@ public class FormRegistro extends JFrame {
             return;
         }
 
-        // El correo debe contener @
         if (!correo.contains("@")) {
             JOptionPane.showMessageDialog(this, "El correo debe contener @.",
                     "Correo inválido", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // El número solo lleva dígitos, excepto pasaporte (41) y documento extranjero (42)
         boolean debeSerNumerico = !(tipoId.startsWith("41") || tipoId.startsWith("42"));
         if (debeSerNumerico && !Validaciones.soloDigitos(numeroId)) {
             JOptionPane.showMessageDialog(this, "El número de identificación solo debe tener dígitos.",
@@ -86,7 +111,6 @@ public class FormRegistro extends JFrame {
             return;
         }
 
-        // El id lo asigna el programa dentro del constructor de Usuario
         Usuario u = new Usuario(tipoId, numeroId, primerNombre, segundoNombre,
                 primerApellido, segundoApellido, password, telefono, correo, rutaFoto);
         usuarios.add(u);
