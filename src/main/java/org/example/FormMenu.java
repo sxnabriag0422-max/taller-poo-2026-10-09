@@ -1,3 +1,4 @@
+
 package org.example;
 
 import javax.swing.*;
@@ -5,6 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class FormMenu extends JFrame {
+
     private JPanel panelPrincipal;
     private JLabel lblTitulo;
     private JButton btnRegistrar;
@@ -17,16 +19,33 @@ public class FormMenu extends JFrame {
         setTitle("BookUsers · Gabriel Sanabria y Nombre Apellido");
         setContentPane(panelPrincipal);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 28));
+
+        lblTitulo.setFont(
+                new Font("SansSerif", Font.BOLD, 28)
+        );
+
         setSize(400, 320);
         setLocationRelativeTo(null);
 
-        btnRegistrar.addActionListener(e -> new FormRegistro(usuarios).setVisible(true));
-        btnListado.addActionListener(e -> JOptionPane.showMessageDialog(this, "Listado: pendiente"));
-        btnCreditos.addActionListener(e -> JOptionPane.showMessageDialog(this, "Créditos: pendiente"));
+        btnRegistrar.addActionListener(e ->
+                new FormRegistro(usuarios).setVisible(true)
+        );
+
+        btnListado.addActionListener(e ->
+                new FormListado(usuarios).setVisible(true)
+        );
+
+        btnCreditos.addActionListener(e ->
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Créditos: pendiente de implementar."
+                )
+        );
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FormMenu().setVisible(true));
+        SwingUtilities.invokeLater(() ->
+                new FormMenu().setVisible(true)
+        );
     }
 }
