@@ -35,12 +35,11 @@ public class FormMenu extends JFrame {
                 new FormListado(usuarios).setVisible(true)
         );
 
+
         btnCreditos.addActionListener(e ->
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Créditos: pendiente de implementar."
-                )
+                new FormCreditos().setVisible(true)
         );
+
     }
 
     public static void main(String[] args) {

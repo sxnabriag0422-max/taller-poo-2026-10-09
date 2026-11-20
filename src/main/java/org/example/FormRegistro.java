@@ -1,3 +1,4 @@
+
 package org.example;
 
 import javax.swing.*;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class FormRegistro extends JFrame {
+
     private JPanel panelPrincipal;
     private JComboBox<String> cmbTipoId;
     private JTextField txtNumeroId;
@@ -29,9 +31,11 @@ public class FormRegistro extends JFrame {
 
     public FormRegistro(ArrayList<Usuario> usuarios) {
         this.usuarios = usuarios;
+
         setTitle("BookUsers · Registro de usuario");
         setContentPane(panelPrincipal);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         llenarTiposId();
         pack();
         setLocationRelativeTo(null);
@@ -40,6 +44,7 @@ public class FormRegistro extends JFrame {
         btnCargarFoto.addActionListener(e -> cargarFoto());
 
         DocumentListener actualizador = new DocumentListener() {
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 actualizarUsername();
@@ -55,14 +60,24 @@ public class FormRegistro extends JFrame {
                 actualizarUsername();
             }
         };
-        txtPrimerNombre.getDocument().addDocumentListener(actualizador);
-        txtPrimerApellido.getDocument().addDocumentListener(actualizador);
-        txtSegundoApellido.getDocument().addDocumentListener(actualizador);
+
+        txtPrimerNombre.getDocument()
+                .addDocumentListener(actualizador);
+
+        txtPrimerApellido.getDocument()
+                .addDocumentListener(actualizador);
+
+        txtSegundoApellido.getDocument()
+                .addDocumentListener(actualizador);
     }
 
     private void actualizarUsername() {
-        String username = Usuario.construirUsername(txtPrimerNombre.getText(),
-                txtPrimerApellido.getText(), txtSegundoApellido.getText());
+        String username = Usuario.construirUsername(
+                txtPrimerNombre.getText(),
+                txtPrimerApellido.getText(),
+                txtSegundoApellido.getText()
+        );
+
         if (username.isEmpty()) {
             lblUsername.setText("-");
         } else {
@@ -80,39 +95,66 @@ public class FormRegistro extends JFrame {
         cmbTipoId.addItem("42 - Documento de identificación extranjero");
         cmbTipoId.addItem("47 - Permiso Especial de Permanencia (PEP)");
         cmbTipoId.addItem("91 - NUIP");
+
         cmbTipoId.setSelectedIndex(2);
     }
 
     private void cargarFoto() {
         JFileChooser selector = new JFileChooser();
+
         selector.setAcceptAllFileFilterUsed(false);
-        selector.setFileFilter(new FileNameExtensionFilter("Imágenes PNG y JPG", "png", "jpg"));
+        selector.setFileFilter(
+                new FileNameExtensionFilter(
+                        "Imágenes PNG y JPG", "png", "jpg"
+                )
+        );
+
         int resultado = selector.showOpenDialog(this);
+
         if (resultado != JFileChooser.APPROVE_OPTION) {
             return;
         }
 
         File archivo = selector.getSelectedFile();
+
         if (!Validaciones.esFotoValida(archivo.getName())) {
-            JOptionPane.showMessageDialog(this, "Seleccione una imagen .png o .jpg.",
-                    "Foto inválida", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Seleccione una imagen .png o .jpg.",
+                    "Foto inválida",
+                    JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
-        ImageIcon original = new ImageIcon(archivo.getAbsolutePath());
+        ImageIcon original =
+                new ImageIcon(archivo.getAbsolutePath());
+
         if (original.getIconWidth() <= 0) {
-            JOptionPane.showMessageDialog(this, "No se pudo leer la imagen seleccionada.",
-                    "Foto inválida", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo leer la imagen seleccionada.",
+                    "Foto inválida",
+                    JOptionPane.ERROR_MESSAGE
+            );
             return;
         }
 
-        Image escalada = original.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+        Image escalada = original.getImage()
+                .getScaledInstance(
+                        120,
+                        120,
+                        Image.SCALE_SMOOTH
+                );
+
         lblFoto.setIcon(new ImageIcon(escalada));
         lblFoto.setText("");
+
         rutaFoto = archivo.getAbsolutePath();
     }
 
     private void guardar() {
+
         String tipoId = (String) cmbTipoId.getSelectedItem();
         String numeroId = txtNumeroId.getText().trim();
         String primerNombre = txtPrimerNombre.getText().trim();
@@ -123,31 +165,105 @@ public class FormRegistro extends JFrame {
         String telefono = txtTelefono.getText().trim();
         String correo = txtCorreo.getText().trim();
 
-        if (numeroId.isEmpty() || primerNombre.isEmpty() || primerApellido.isEmpty()
-                || password.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Complete todos los campos obligatorios.",
-                    "Datos incompletos", JOptionPane.WARNING_MESSAGE);
+        // 1. Comprobar campos obligatorios
+        if (numeroId.isEmpty()
+                || primerNombre.isEmpty()
+                || primerApellido.isEmpty()
+                || password.isEmpty()
+                || telefono.isEmpty()
+                || correo.isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Complete todos los campos obligatorios.",
+                    "Datos incompletos",
+                    JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
+        // 2. Validar correo electrónico
         if (!correo.contains("@")) {
-            JOptionPane.showMessageDialog(this, "El correo debe contener @.",
-                    "Correo inválido", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El correo debe contener @.",
+                    "Correo inválido",
+                    JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
-        boolean debeSerNumerico = !(tipoId.startsWith("41") || tipoId.startsWith("42"));
-        if (debeSerNumerico && !Validaciones.soloDigitos(numeroId)) {
-            JOptionPane.showMessageDialog(this, "El número de identificación solo debe tener dígitos.",
-                    "Número inválido", JOptionPane.WARNING_MESSAGE);
+        // 3. Validar número de identificación
+        boolean debeSerNumerico =
+                !(tipoId.startsWith("41")
+                        || tipoId.startsWith("42"));
+
+        if (debeSerNumerico
+                && !Validaciones.soloDigitos(numeroId)) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El número de identificación solo debe tener dígitos.",
+                    "Número inválido",
+                    JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
-        Usuario u = new Usuario(tipoId, numeroId, primerNombre, segundoNombre,
-                primerApellido, segundoApellido, password, telefono, correo, rutaFoto);
+        // 4. Validar teléfono
+        if (!telefono.matches("\\d+")) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El teléfono debe contener únicamente números.",
+                    "Teléfono inválido",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        // 5. Validar seguridad de contraseña
+        if (!password.matches(
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$"
+        )) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "La contraseña debe contener:\n"
+                            + "- Mínimo 8 caracteres.\n"
+                            + "- Una letra mayúscula.\n"
+                            + "- Una letra minúscula.\n"
+                            + "- Un número.\n"
+                            + "- Un símbolo especial.",
+                    "Contraseña insegura",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        // 6. Crear y registrar usuario
+        Usuario u = new Usuario(
+                tipoId,
+                numeroId,
+                primerNombre,
+                segundoNombre,
+                primerApellido,
+                segundoApellido,
+                password,
+                telefono,
+                correo,
+                rutaFoto
+        );
+
         usuarios.add(u);
 
-        JOptionPane.showMessageDialog(this, "Usuario registrado correctamente.\nUsername: " + u.getUsername());
+        JOptionPane.showMessageDialog(
+                this,
+                "Usuario registrado correctamente.\n"
+                        + "Username: " + u.getUsername(),
+                "Registro exitoso",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+
         limpiarFormulario();
     }
 
@@ -162,6 +278,7 @@ public class FormRegistro extends JFrame {
         txtTelefono.setText("");
         txtCorreo.setText("");
         lblUsername.setText("-");
+
         rutaFoto = "";
         lblFoto.setIcon(null);
         lblFoto.setText("Sin foto");
