@@ -40,6 +40,14 @@ public class Validaciones {
         }
         return true;
     }
+
+    public static boolean soloDigitos(String texto) {
+        if (texto == null || texto.isEmpty()) return false;
+        for (int i = 0; i < texto.length(); i++) {
+            if (!Character.isDigit(texto.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
-
-

@@ -11,7 +11,6 @@ public class FormMenu extends JFrame {
     private JButton btnListado;
     private JButton btnCreditos;
 
-    // La única lista de usuarios de toda la aplicación: se crea aquí una sola vez
     private final ArrayList<Usuario> usuarios = new ArrayList<>();
 
     public FormMenu() {
@@ -22,7 +21,6 @@ public class FormMenu extends JFrame {
         setSize(400, 320);
         setLocationRelativeTo(null);
 
-        // Por ahora los botones solo avisan; se conectan con cada ventana más adelante
         btnRegistrar.addActionListener(e -> new FormRegistro(usuarios).setVisible(true));
         btnListado.addActionListener(e -> JOptionPane.showMessageDialog(this, "Listado: pendiente"));
         btnCreditos.addActionListener(e -> JOptionPane.showMessageDialog(this, "Créditos: pendiente"));

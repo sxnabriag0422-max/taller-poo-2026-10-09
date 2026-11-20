@@ -15,6 +15,7 @@ public class Usuario {
     private String telefono;
     private String correo;
     private String rutaFoto;
+    private static int contadorId = 1;
 
     public Usuario(String tipoIdentificacion, String numeroIdentificacion, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String password, String telefono, String correo, String rutaFoto) {
         this.tipoIdentificacion = tipoIdentificacion;
@@ -28,6 +29,7 @@ public class Usuario {
         this.correo = correo;
         this.rutaFoto = rutaFoto;
         this.username = generarUsername();
+        this.id = contadorId++;
     }
 
     public void setId(int id) {
@@ -102,7 +104,6 @@ public class Usuario {
         return construirUsername(primerNombre, primerApellido, segundoApellido);
     }
 
-    // Estático para poder usarlo en el formulario antes de crear el usuario
     public static String construirUsername(String primerNombre, String primerApellido, String segundoApellido) {
         String inicialPrimero = "";
         if (!primerApellido.trim().isEmpty()) {
@@ -116,7 +117,6 @@ public class Usuario {
         return limpiar(texto);
     }
 
-    // Minúsculas, sin tildes, sin ñ y sin espacios
     private static String limpiar(String texto) {
         String separado = Normalizer.normalize(texto, Normalizer.Form.NFD);
         String sinTildes = separado.replaceAll("\\p{M}", "");
