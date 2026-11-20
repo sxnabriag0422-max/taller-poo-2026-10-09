@@ -3,6 +3,9 @@ package org.example;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.Image;
+import java.io.File;
 import java.util.ArrayList;
 
 public class FormRegistro extends JFrame {
@@ -22,7 +25,6 @@ public class FormRegistro extends JFrame {
     private JButton btnGuardar;
 
     private final ArrayList<Usuario> usuarios;
-
     private String rutaFoto = "";
 
     public FormRegistro(ArrayList<Usuario> usuarios) {
@@ -35,6 +37,7 @@ public class FormRegistro extends JFrame {
         setLocationRelativeTo(null);
 
         btnGuardar.addActionListener(e -> guardar());
+        btnCargarFoto.addActionListener(e -> cargarFoto());
 
         DocumentListener actualizador = new DocumentListener() {
             @Override
@@ -78,6 +81,35 @@ public class FormRegistro extends JFrame {
         cmbTipoId.addItem("47 - Permiso Especial de Permanencia (PEP)");
         cmbTipoId.addItem("91 - NUIP");
         cmbTipoId.setSelectedIndex(2);
+    }
+
+    private void cargarFoto() {
+        JFileChooser selector = new JFileChooser();
+        selector.setAcceptAllFileFilterUsed(false);
+        selector.setFileFilter(new FileNameExtensionFilter("Imágenes PNG y JPG", "png", "jpg"));
+        int resultado = selector.showOpenDialog(this);
+        if (resultado != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File archivo = selector.getSelectedFile();
+        if (!Validaciones.esFotoValida(archivo.getName())) {
+            JOptionPane.showMessageDialog(this, "Seleccione una imagen .png o .jpg.",
+                    "Foto inválida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        ImageIcon original = new ImageIcon(archivo.getAbsolutePath());
+        if (original.getIconWidth() <= 0) {
+            JOptionPane.showMessageDialog(this, "No se pudo leer la imagen seleccionada.",
+                    "Foto inválida", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Image escalada = original.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+        lblFoto.setIcon(new ImageIcon(escalada));
+        lblFoto.setText("");
+        rutaFoto = archivo.getAbsolutePath();
     }
 
     private void guardar() {
