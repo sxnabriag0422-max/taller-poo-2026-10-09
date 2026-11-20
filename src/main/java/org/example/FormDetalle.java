@@ -26,14 +26,11 @@ public class FormDetalle extends JFrame {
         mostrarInformacion();
         mostrarFoto();
 
+
         btnGenerarPDF.addActionListener(e ->
-                JOptionPane.showMessageDialog(
-                        this,
-                        "La generación del PDF se implementará en la Fase 16.",
-                        "BookUsers",
-                        JOptionPane.INFORMATION_MESSAGE
-                )
+                GeneradorPDF.generar(usuario, this)
         );
+
     }
 
     private void mostrarInformacion() {
